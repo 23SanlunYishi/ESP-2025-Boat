@@ -20,6 +20,12 @@ CANFDMessage frame;
 // その他のグローバル変数
 bool state = false;
 
+//LoadSWの設定
+const int pwmPin = 15;      // 出力するピン
+const int pwmChannel = 0;   // 0〜7のチャンネル
+const int pwmFreq = 25000;  // 25kHz
+const int pwmResolution = 10; // 10 bit（0〜1023）
+
 void setup() {
   Serial.begin(115200);
 
@@ -44,6 +50,11 @@ void setup() {
   pinMode(SW1, INPUT);
   for (int i = 0; i < 16; ++i)
     frame.dataFloat[i] = 0;
+    
+  // LoadSWの起動
+  ledcSetup(pwmChannel, pwmFreq, pwmResolution);
+  ledcAttachPin(pwmPin, pwmChannel);
+  ledcWrite(pwmChannel, (int)(1.15/3.3*1023.0));  // 1.15Vを出力
 }
 
 void loop() {
