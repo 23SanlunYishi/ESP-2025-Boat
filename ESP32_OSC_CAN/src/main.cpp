@@ -14,6 +14,7 @@ const int UDP_PORT = 8000;
 #define SW1 21
 CANFDController canfd(5, 33);
 CANFDMessage frame;
+const int can_id = 1;
 
 //LoadSWの設定
 const int pwmPin = 15;      // 出力するピン
@@ -41,7 +42,6 @@ void setup() {
   OscWiFi.subscribe(UDP_PORT, "/air", [](OscMessage& m)
   {
     air = m.arg<float>(0);
-
     Serial.print("Recv /air : ");
     Serial.print("air="); Serial.println(air);
   });
@@ -55,13 +55,18 @@ void setup() {
   // LoadSWの起動
   ledcSetup(pwmChannel, pwmFreq, pwmResolution);
   ledcAttachPin(pwmPin, pwmChannel);
-  ledcWrite(pwmChannel, (int)(1.15/3.3*1023.0));  // 1.15Vを出力
+  ledcWrite(pwmChannel, (int)(2.35/3.3*1023.0));  // 2.35Vを出力
 }
 
 void loop() {
+  // OSCの更新
   OscWiFi.update();
 
+  // CANFDの送受信処理
   canfd.send(frame);
   canfd.receive();
-  frame.dataFloat[1] = air;
+  frame.dataFloat[can_id] = air;
+
+  // 大体10ms周期
+  delay(10);
 }
