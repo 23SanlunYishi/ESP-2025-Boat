@@ -2,8 +2,8 @@
 #include <WiFi.h>
 #include <ArduinoOSCWiFi.h>
 #include <SPI.h>
-const char* ssid     = "Buffalo-G-23D6";
-const char* password = "FuEjan9m5Sp4";
+const char* ssid     = "D2-Score-2.4GHz";
+const char* password = "robomech-d2";
 
 const int receivePort = 8000;  // Unity が送ってくるやつ
 

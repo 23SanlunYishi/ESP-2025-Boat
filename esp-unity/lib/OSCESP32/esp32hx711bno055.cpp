@@ -24,7 +24,33 @@ const int HX_R_DT = 16;
 const int HX_R_SCK = 17;
 
 unsigned long lastSend = 0;
+// ----------------------
+// ロードセル キャリブレーション
+// ----------------------
+void calibrateLoadcells()
+{
+  Serial.println("=== Loadcell calibration start ===");
+  Serial.println("※ 今は誰も板に乗らない状態にしておいてください");
 
+  // スケールをいったんリセット
+  scaleLeft.set_scale(1.0f);
+  scaleRight.set_scale(1.0f);
+
+  // タレ（ゼロ点合わせ）
+  // 引数は平均回数。大きいほど安定するが時間がかかる
+  const uint8_t samples = 50;
+
+  Serial.println("Left tare...");
+  scaleLeft.tare(samples);
+  Serial.println("Right tare...");
+  scaleRight.tare(samples);
+
+  // デバッグ用にゼロ点での値を確認
+  float testL = scaleLeft.get_units(10);
+  float testR = scaleRight.get_units(10);
+  Serial.printf("Tare done. Test L=%.3f, R=%.3f (ほぼ0ならOK)\n", testL, testR);
+  Serial.println("=== Loadcell calibration end ===");
+}
 void setup() {
   Serial.begin(115200);
   // I2C 初期化（明示的に SDA=21, SCL=22 を指定）
@@ -49,8 +75,7 @@ void setup() {
   scaleLeft.begin(HX_L_DT, HX_L_SCK);
   scaleRight.begin(HX_R_DT, HX_R_SCK);
   
-  scaleLeft.set_scale(1.0);
-  scaleRight.set_scale(1.0);
+  calibrateLoadcells();
 }
 
 void loop() {

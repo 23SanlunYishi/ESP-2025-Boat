@@ -11,7 +11,7 @@ Adafruit_BNO055 bno = Adafruit_BNO055(55, 0x28);
 void setup(void)
 {
   pinMode(21, INPUT_PULLUP); //SDA 21番ピンのプルアップ(念のため)
-  pinMode(22, INPUT_PULLUP); //SDA 22番ピンのプルアップ(念のため)
+  pinMode(22, INPUT_PULLUP); //SCL 22番ピンのプルアップ(念のため)
 
   Serial.begin(115200);
   Serial.println("Orientation Sensor Raw Data Test"); Serial.println("");
